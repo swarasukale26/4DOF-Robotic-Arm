@@ -1,0 +1,189 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="arm_4dof">
+
+  <!-- ========== Dimensions (metres) ========== -->
+  <xacro:property name="base_radius"  value="0.08"/>
+  <xacro:property name="base_height"  value="0.05"/>
+  <xacro:property name="sh_x"         value="0.10"/>
+  <xacro:property name="sh_y"         value="0.10"/>
+  <xacro:property name="sh_z"         value="0.07"/>
+  <xacro:property name="ua_size"      value="0.06"/>
+  <xacro:property name="ua_length"    value="0.25"/>
+  <xacro:property name="fa_size"      value="0.05"/>
+  <xacro:property name="fa_length"    value="0.20"/>
+  <xacro:property name="wr_size"      value="0.06"/>
+  <xacro:property name="tool_radius"  value="0.03"/>
+  <xacro:property name="tool_length"  value="0.05"/>
+
+  <!-- ========== Materials ========== -->
+  <material name="dark_grey"><color rgba="0.20 0.20 0.20 1.0"/></material>
+  <material name="orange"><color rgba="0.90 0.45 0.10 1.0"/></material>
+  <material name="blue"><color rgba="0.10 0.30 0.80 1.0"/></material>
+  <material name="green"><color rgba="0.20 0.70 0.20 1.0"/></material>
+  <material name="yellow"><color rgba="0.85 0.70 0.10 1.0"/></material>
+
+  <!-- ========== Inertia macros ========== -->
+  <xacro:macro name="cyl_inertial" params="m r h">
+    <inertial>
+      <origin xyz="0 0 ${h/2}" rpy="0 0 0"/>
+      <mass value="${m}"/>
+      <inertia ixx="${m*(3*r*r + h*h)/12}" ixy="0" ixz="0"
+               iyy="${m*(3*r*r + h*h)/12}" iyz="0"
+               izz="${m*r*r/2}"/>
+    </inertial>
+  </xacro:macro>
+
+  <xacro:macro name="box_inertial" params="m x y z">
+    <inertial>
+      <origin xyz="0 0 ${z/2}" rpy="0 0 0"/>
+      <mass value="${m}"/>
+      <inertia ixx="${m*(y*y + z*z)/12}" ixy="0" ixz="0"
+               iyy="${m*(x*x + z*z)/12}" iyz="0"
+               izz="${m*(x*x + y*y)/12}"/>
+    </inertial>
+  </xacro:macro>
+
+  <!-- ========== LINKS ========== -->
+
+  <link name="world"/>
+
+  <!-- Base: dark grey cylinder -->
+  <link name="base_link">
+    <visual>
+      <origin xyz="0 0 ${base_height/2}" rpy="0 0 0"/>
+      <geometry><cylinder radius="${base_radius}" length="${base_height}"/></geometry>
+      <material name="dark_grey"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 ${base_height/2}" rpy="0 0 0"/>
+      <geometry><cylinder radius="${base_radius}" length="${base_height}"/></geometry>
+    </collision>
+    <xacro:cyl_inertial m="2.0" r="${base_radius}" h="${base_height}"/>
+  </link>
+
+  <!-- Shoulder: orange box -->
+  <link name="shoulder_link">
+    <visual>
+      <origin xyz="0 0 ${sh_z/2}" rpy="0 0 0"/>
+      <geometry><box size="${sh_x} ${sh_y} ${sh_z}"/></geometry>
+      <material name="orange"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 ${sh_z/2}" rpy="0 0 0"/>
+      <geometry><box size="${sh_x} ${sh_y} ${sh_z}"/></geometry>
+    </collision>
+    <xacro:box_inertial m="1.0" x="${sh_x}" y="${sh_y}" z="${sh_z}"/>
+  </link>
+
+  <!-- Upper arm: blue box -->
+  <link name="upper_arm_link">
+    <visual>
+      <origin xyz="0 0 ${ua_length/2}" rpy="0 0 0"/>
+      <geometry><box size="${ua_size} ${ua_size} ${ua_length}"/></geometry>
+      <material name="blue"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 ${ua_length/2}" rpy="0 0 0"/>
+      <geometry><box size="${ua_size} ${ua_size} ${ua_length}"/></geometry>
+    </collision>
+    <xacro:box_inertial m="1.5" x="${ua_size}" y="${ua_size}" z="${ua_length}"/>
+  </link>
+
+  <!-- Forearm: green box -->
+  <link name="forearm_link">
+    <visual>
+      <origin xyz="0 0 ${fa_length/2}" rpy="0 0 0"/>
+      <geometry><box size="${fa_size} ${fa_size} ${fa_length}"/></geometry>
+      <material name="green"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 ${fa_length/2}" rpy="0 0 0"/>
+      <geometry><box size="${fa_size} ${fa_size} ${fa_length}"/></geometry>
+    </collision>
+    <xacro:box_inertial m="1.0" x="${fa_size}" y="${fa_size}" z="${fa_length}"/>
+  </link>
+
+  <!-- Wrist: yellow box -->
+  <link name="wrist_link">
+    <visual>
+      <origin xyz="0 0 ${wr_size/2}" rpy="0 0 0"/>
+      <geometry><box size="${wr_size} ${wr_size} ${wr_size}"/></geometry>
+      <material name="yellow"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 ${wr_size/2}" rpy="0 0 0"/>
+      <geometry><box size="${wr_size} ${wr_size} ${wr_size}"/></geometry>
+    </collision>
+    <xacro:box_inertial m="0.3" x="${wr_size}" y="${wr_size}" z="${wr_size}"/>
+  </link>
+
+  <!-- Tool: dark grey cylinder -->
+  <link name="tool_link">
+    <visual>
+      <origin xyz="0 0 ${tool_length/2}" rpy="0 0 0"/>
+      <geometry><cylinder radius="${tool_radius}" length="${tool_length}"/></geometry>
+      <material name="dark_grey"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 ${tool_length/2}" rpy="0 0 0"/>
+      <geometry><cylinder radius="${tool_radius}" length="${tool_length}"/></geometry>
+    </collision>
+    <xacro:cyl_inertial m="0.1" r="${tool_radius}" h="${tool_length}"/>
+  </link>
+
+  <!-- ========== JOINTS ========== -->
+
+  <joint name="world_joint" type="fixed">
+    <parent link="world"/>
+    <child link="base_link"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+
+  <!-- Joint 1: base rotation (Z) -->
+  <joint name="joint_1" type="revolute">
+    <parent link="base_link"/>
+    <child link="shoulder_link"/>
+    <origin xyz="0 0 ${base_height}" rpy="0 0 0"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-3.14159" upper="3.14159" effort="50" velocity="1.57"/>
+    <dynamics damping="0.1" friction="0.0"/>
+  </joint>
+
+  <!-- Joint 2: shoulder pitch (Y) -->
+  <joint name="joint_2" type="revolute">
+    <parent link="shoulder_link"/>
+    <child link="upper_arm_link"/>
+    <origin xyz="0 0 ${sh_z}" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="-1.57" upper="1.57" effort="50" velocity="1.57"/>
+    <dynamics damping="0.1" friction="0.0"/>
+  </joint>
+
+  <!-- Joint 3: elbow pitch (Y) -->
+  <joint name="joint_3" type="revolute">
+    <parent link="upper_arm_link"/>
+    <child link="forearm_link"/>
+    <origin xyz="0 0 ${ua_length}" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="-2.0" upper="2.0" effort="50" velocity="1.57"/>
+    <dynamics damping="0.1" friction="0.0"/>
+  </joint>
+
+  <!-- Joint 4: wrist pitch (Y) -->
+  <joint name="joint_4" type="revolute">
+    <parent link="forearm_link"/>
+    <child link="wrist_link"/>
+    <origin xyz="0 0 ${fa_length}" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="-3.14159" upper="3.14159" effort="50" velocity="1.57"/>
+    <dynamics damping="0.1" friction="0.0"/>
+  </joint>
+
+  <!-- Fixed: tool mounted on the wrist -->
+  <joint name="tool_joint" type="fixed">
+    <parent link="wrist_link"/>
+    <child link="tool_link"/>
+    <origin xyz="0 0 ${wr_size}" rpy="0 0 0"/>
+  </joint>
+
+</robot>
