@@ -50,10 +50,9 @@ The robotic arm consists of the following main components:
 ## Project Structure
 
 ```text
-4dof-robotic-arm/
+4DOF-Robotic-Arm/
 ├── CMakeLists.txt
 ├── package.xml
-├── README.md
 ├── launch/
 │   └── display.launch.py
 ├── rviz/
