@@ -88,7 +88,7 @@ cd ~/robot_arm_ws/src
 ### 2. Clone this repository
 
 ```bash
-git clone https://github.com/swarasukale26/4dof-robotic-arm.git
+git clone https://github.com/swarasukale26/4DOF-Robotic-Arm.git
 ```
 
 ### 3. Install dependencies
