@@ -8,7 +8,7 @@
 
   <maintainer email="swarasukale06@gmail.com">Swara Sukale</maintainer>
 
-  <license>Apache-2.0</license>
+  <license>Proprietary</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
 
