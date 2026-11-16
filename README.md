@@ -52,7 +52,6 @@ The robotic arm consists of the following main components:
 ```text
 4dof-robotic-arm/
 ├── CMakeLists.txt
-├── LICENSE
 ├── package.xml
 ├── README.md
 ├── launch/
@@ -142,10 +141,6 @@ Through this project, I gained practical experience in:
 - Working with ROS 2 packages and launch files.
 - Visualizing robot models using RViz.
 - Controlling joint positions using Joint State Publisher GUI.
-
-## License
-
-This project is licensed under the Apache License 2.0. See the [LICENSE](LICENSE) file for details.
 
 ## Author
 
